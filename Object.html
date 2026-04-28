@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phone Catalogue</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="Style.css">
+</head>
+<body>
+    <div class="notification" id="notification">
+        <span id="notificationText">✓ Added to cart</span>
+    </div>
+
+    <div class="intro-page" id="introPage">
+        <div class="intro-card">
+            <h1>Welcome to DiazCell</h1>
+            <p>Discover premium phones, chargers, and audio accessories handpicked for your next upgrade. Tap below to explore our catalogue.</p>
+            <button class="start-shopping-btn" onclick="startShopping()">Start Shopping</button>
+        </div>
+    </div>
+
+   <div id="pageContent" class="hidden">
+        <button class="back-btn" onclick="goBackToIntro()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            Back
+        </button>
+
+        <h1>Browse Products</h1>
+        
+        <div class="category-buttons">
+            <button class="category-btn active" onclick="filterByCategory('phone', this)">📱 Phone</button>
+            <button class="category-btn" onclick="filterByCategory('charger', this)">🔌 Charger & Cable</button>
+            <button class="category-btn" onclick="filterByCategory('audio', this)">🎧 Audios</button>
+        </div>
+        
+        <div class="main-content">
+            <div id="catalogue" class="catalogue"></div>
+        </div>
+        
+        <div class="cart-sidebar" id="cartSidebar">
+            <div class="cart-header">
+                <h2>🛒 Cart</h2>
+                <button class="close-cart-btn" onclick="toggleCart()">✕</button>
+            </div>
+            <div class="cart-items" id="cartItems"></div>
+            <div class="cart-footer">
+            <div class="cart-total">
+            <span>Total:</span>
+                <span>$<span id="cartTotal">0.00</span></span>
+            </div>
+                <button class="checkout-btn" onclick="checkout()">Checkout</button>
+                <button class="clear-cart-btn" onclick="clearCart()">Clear Cart</button>
+            </div>
+        </div>
+        
+        <button class="cart-toggle-btn" onclick="toggleCart()">🛒 Cart (<span id="cartCount">0</span>)</button>
+
+        <div class="details-overlay hidden" id="detailsOverlay">
+            <div class="details-panel">
+                <button class="close-details-btn" onclick="closeProductDetails()">✕</button>
+                <div class="details-header">
+                    <img id="detailsImage" class="details-image" src="" alt="Product image">
+                    <div class="details-summary">
+                        <h2 id="detailsName"></h2>
+                        <p class="details-price">$<span id="detailsPrice"></span></p>
+                        <p id="detailsStock" class="details-stock"></p>
+                    </div>
+                </div>
+                <p id="detailsDescription" class="details-description"></p>
+                <div class="details-specs">
+                    <h3>Product Specifications</h3>
+                    <ul id="detailsSpecsList"></ul>
+                </div>
+                <button class="add-to-cart-btn" id="detailsAddToCartBtn" onclick="detailsAddToCart()">Add to Cart</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentCategory = 'phone';
+        let cart = [];
+        
+        const items = [
+            {
+                name: "Xiaomi 15",
+                price: 699.99,
+                stock: 12,
+                category: "phone",
+                image: "https://cdn.kalvo.com/uploads/img/gallery/66531-xiaomi-15-3.jpg",
+                description: "The Xiaomi 15 brings premium build quality, a vivid display, and a long-lasting battery at a great price.",
+                specs: [
+                    { label: "Display", value: "6.36-inch AMOLED, 120Hz" },
+                    { label: "Processor", value: "Snapdragon 8 Gen 3" },
+                    { label: "Battery", value: "5100 mAh, 120W fast charging" },
+                    { label: "Camera", value: "50MP main + 50MP ultrawide" }
+                ]
+            },
+            {
+                name: "Google Pixel 8a",
+                price: 499.99,
+                stock: 5,
+                category: "phone",
+                image: "https://m.media-amazon.com/images/I/71JTIdBUvYL._AC_SL1500_.jpg",
+                description: "A clean Android experience with excellent camera software and strong performance for the price.",
+                specs: [
+                    { label: "Display", value: "6.1-inch OLED, 120Hz" },
+                    { label: "Processor", value: "Google Tensor G3" },
+                    { label: "Battery", value: "4500 mAh, 18W charging" },
+                    { label: "Camera", value: "64MP main + 13MP ultrawide" }
+                ]
+            },
+            {
+                name: "iPhone 15",
+                price: 899.99,
+                stock: 0,
+                category: "phone",
+                image: "https://cdnpro.eraspace.com/media/catalog/product/a/p/apple_iphone_15_plus_blue_1.jpg",
+                description: "Apple's flagship compact experience: a polished camera system and reliable iOS performance.",
+                specs: [
+                    { label: "Display", value: "6.1-inch Super Retina XDR" },
+                    { label: "Processor", value: "A16 Bionic" },
+                    { label: "Battery", value: "3349 mAh, MagSafe charging" },
+                    { label: "Camera", value: "48MP main + 12MP ultrawide" }
+                ]
+            },
+            {
+                name: "Xiaomi Redmi Note 15", 
+                price: 299.99,
+                stock: 3,
+                category: "phone",
+                image: "https://cdn.etoren.com/upload/images/0.91327100_1755858432_xiaomi-redmi-note-15-5g-dual-sim-128gb-midnight-black-6gb-ram-china-version.jpg",
+                description: "A budget-friendly phone that still offers a bright display, solid battery life, and capable cameras.",
+                specs: [
+                    { label: "Display", value: "6.67-inch AMOLED" },
+                    { label: "Processor", value: "MediaTek Dimensity 6080" },
+                    { label: "Battery", value: "6000 mAh, 33W charging" },
+                    { label: "Camera", value: "108MP main + 8MP ultrawide" }
+                ]
+            },
+            {
+                name: "Samsung Galaxy S25 Ultra",
+                price: 1099.99,
+                stock: 8,
+                category: "phone",
+                image: "https://carisinyal.com/wp-content/uploads/2025/01/Galaxy-S25-Ultra-titanium-silver-blue_.webp",
+                description: "A flagship powerhouse with a stunning screen, top-tier camera array, and premium glass design.",
+                specs: [
+                    { label: "Display", value: "6.8-inch Dynamic AMOLED 2X, 120Hz" },
+                    { label: "Processor", value: "Exynos 2500 / Snapdragon 8 Gen 4" },
+                    { label: "Battery", value: "5200 mAh, 65W charging" },
+                    { label: "Camera", value: "200MP main + 50MP telephoto" }
+                ]
+            },
+            {
+                name: "Poco X8 Pro",
+                price: 499.99,
+                stock: 2,
+                category: "phone",
+                image: "https://carisinyal.com/wp-content/uploads/2026/02/poco-x8-pro__1.webp",
+                description: "A strong midrange phone with fast charging, a bright display, and competitive performance.",
+                specs: [
+                    { label: "Display", value: "6.67-inch AMOLED, 120Hz" },
+                    { label: "Processor", value: "Snapdragon 7s Gen 2" },
+                    { label: "Battery", value: "5500 mAh, 67W charging" },
+                    { label: "Camera", value: "108MP main + 8MP ultrawide" }
+                ]
+            },
+            {
+                name: "Ugreen USB-C Fast Charger",
+                price: 29.99,
+                stock: 15,
+                category: "charger",
+                image: "https://uk.ugreen.com/cdn/shop/products/ugreen-usb-c-to-usb-c-charger-cable-100w-usb-c-cable-fast-charging-data-sync-lead-with-e-marker-chip-565190.png?v=1692927424",
+                description: "A compact high-wattage charger built for laptops, phones, and tablets with fast USB-C power delivery.",
+                specs: [
+                    { label: "Output", value: "100W USB-C PD" },
+                    { label: "Ports", value: "1x USB-C" },
+                    { label: "Compatibility", value: "Laptops, phones, tablets" },
+                    { label: "Safety", value: "Overheat and surge protection" }
+                ]
+            },
+            {
+                name: "Apple Lightning Cable",
+                price: 19.99,
+                stock: 20,
+                category: "charger",
+                image: "https://m.media-amazon.com/images/I/61FTrhdnqEL.jpg",
+                description: "A durable MFi-certified Lightning cable designed for fast charging and reliable data transfer.",
+                specs: [
+                    { label: "Length", value: "1m" },
+                    { label: "Connector", value: "Lightning to USB-C" },
+                    { label: "Supports", value: "Fast charge & sync" },
+                    { label: "Compatibility", value: "iPhone, iPad, AirPods" }
+                ]
+            },
+            {
+                name: "Ugreen Wireless Charger",
+                price: 34.99,
+                stock: 8,
+                category: "charger",
+                image: "https://m.media-amazon.com/images/I/51UhPxFuR8L._AC_UF894,1000_QL80_.jpg",
+                description: "A sleek wireless charging pad that powers Qi-compatible devices with a stable charge every time.",
+                specs: [
+                    { label: "Wireless Output", value: "15W" },
+                    { label: "Compatibility", value: "Qi-enabled phones & earbuds" },
+                    { label: "Design", value: "Anti-slip pad with LED indicator" },
+                    { label: "Safety", value: "Temperature control" }
+                ]
+            },
+            {
+                name: "AirPods Pro 3",
+                price: 249.99,
+                stock: 6,
+                category: "audio",
+                image: "https://assets.products-live.ao.com/Images/d2559ed2-060e-4c04-a2c4-683210c2c23a/1280x1280/AirPods_Pro_3_02.jpg",
+                description: "Premium wireless earbuds with active noise cancellation, spatial audio, and adaptive transparency.",
+                specs: [
+                    { label: "Noise Cancellation", value: "Active ANC" },
+                    { label: "Battery", value: "Up to 6 hours listening" },
+                    { label: "Charging", value: "MagSafe / wireless / Lightning" },
+                    { label: "Connectivity", value: "Bluetooth 5.3" }
+                ]
+            },
+            {
+                name: "Sony WH-1000XM4",
+                price: 348.00,
+                stock: 4,
+                category: "audio",
+                image: "https://www.sony.co.id/image/5d02da5df552836db894cead8a68f5f3?fmt=pjpeg&wid=330&bgcolor=FFFFFF&bgc=FFFFFF",
+                description: "A top-rated noise-cancelling headset with exceptional sound quality, comfort, and long battery life.",
+                specs: [
+                    { label: "Noise Cancellation", value: "Industry-leading ANC" },
+                    { label: "Battery", value: "Up to 30 hours" },
+                    { label: "Connectivity", value: "Bluetooth 5.2" },
+                    { label: "Features", value: "Speak-to-chat, touch controls" }
+                ]
+            },
+            {
+                name: "JBL Flip 6",
+                price: 129.99,
+                stock: 10,
+                category: "audio",
+                image: "https://images-cdn.ubuy.co.id/671bebb506bbc4159b0be649-jbl-flip-6-portable-waterproof-speaker.jpg",
+                description: "A rugged Bluetooth speaker with powerful JBL sound and full waterproof protection for outdoor use.",
+                specs: [
+                    { label: "Output", value: "20W" },
+                    { label: "Battery", value: "Up to 12 hours" },
+                    { label: "Durability", value: "IP67 waterproof" },
+                    { label: "Connectivity", value: "Bluetooth 5.3" }
+                ]
+            },
+            {
+                name: "HyperX Cloud III S",
+                price: 249.99,
+                stock: 12,
+                category: "audio",
+                image: "https://row.hyperx.com/cdn/shop/files/hyperx_cloud_iii_s_wireless_white_ax6g1aa_main_1.jpg?v=1764893483",
+                description: "Comfortable gaming headphones with immersive audio, detachable mic, and long-lasting battery life.",
+                specs: [
+                    { label: "Audio", value: "HyperX 50mm drivers" },
+                    { label: "Battery", value: "Up to 35 hours" },
+                    { label: "Microphone", value: "Detachable noise-cancelling mic" },
+                    { label: "Connectivity", value: "Wireless + wired" }
+                ]
+            },
+            {
+                name: "Razer Hammerhead Pro V2",
+                price: 25.00,
+                stock: 9,
+                category: "audio",
+                image: "https://kkomputer.com/6662/razer-hammerhead-pro-v2-oem.jpg",
+                description: "Affordable earbuds with low-latency sound and a secure fit for music and gaming on the go.",
+                specs: [
+                    { label: "Driver", value: "10mm dynamic drivers" },
+                    { label: "Connection", value: "USB-C" },
+                    { label: "Design", value: "In-ear with cable management" },
+                    { label: "Extras", value: "Built-in mic" }
+                ]
+            },
+            {
+                name: "Moondrop Chu II",
+                price: 19.99,
+                stock: 3,
+                category: "audio",
+                image: "https://cdn.prod.website-files.com/627128d862c9a44234848dda/64a67decb6354a3471c0d4cd_CHU2.jpg",
+                description: "Entry-level audiophile earbuds with balanced sound and comfortable fit for everyday listening.",
+                specs: [
+                    { label: "Driver", value: "10mm dynamic driver" },
+                    { label: "Frequency", value: "20Hz - 20kHz" },
+                    { label: "Cable", value: "Detachable braided cable" },
+                    { label: "Comfort", value: "Silicone ear tips" }
+                ]
+            }
+        ];
+
+        function getStockStatus(stock) {
+            if (stock === 0) {
+                return { class: "out-of-stock", text: "Out of Stock" };
+            } else if (stock < 5) {
+                return { class: "low-stock", text: "Low Stock (" + stock + " left)" };
+            } else {
+                return { class: "in-stock", text: "In Stock (" + stock + " available)" };
+            }
+        }
+
+        function addToCart(productName) {
+            const product = items.find(p => p.name === productName);
+            if (product) {
+                const cartItem = cart.find(item => item.name === productName);
+                if (cartItem) {
+                    cartItem.quantity += 1;
+                } else {
+                    cart.push({ ...product, quantity: 1 });
+                }
+                updateCart();
+                showNotification(`✓ ${productName} added to cart`);
+            }
+        }
+
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notificationText');
+            notificationText.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        function updateCart() {
+            const cartItemsDiv = document.getElementById('cartItems');
+            const cartCountSpan = document.getElementById('cartCount');
+            const cartTotalSpan = document.getElementById('cartTotal');
+            
+            cartCountSpan.textContent = cart.length > 0 ? cart.reduce((sum, item) => sum + item.quantity, 0) : 0;
+            
+            if (cart.length === 0) {
+                cartItemsDiv.innerHTML = '<p class="empty-cart">Your cart is empty</p>';
+                cartTotalSpan.textContent = '0.00';
+                return;
+            }
+            
+            cartItemsDiv.innerHTML = cart.map((item, index) => `
+                <div class="cart-item">
+                    <div class="cart-item-name">${item.name}</div>
+                    <div class="cart-item-price">$${item.price.toFixed(2)}</div>
+                    <div class="cart-item-quantity">
+                        <button onclick="decreaseQuantity(${index})">-</button>
+                        <span>${item.quantity}</span>
+                        <button onclick="increaseQuantity(${index})">+</button>
+                    </div>
+                    <div class="cart-item-total">Total: $${(item.price * item.quantity).toFixed(2)}</div>
+                    <button class="remove-item-btn" onclick="removeFromCart(${index})">Remove</button>
+                </div>
+            `).join('');
+            
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            cartTotalSpan.textContent = total.toFixed(2);
+        }
+
+        function increaseQuantity(index) {
+            cart[index].quantity += 1;
+            updateCart();
+        }
+
+        function decreaseQuantity(index) {
+            if (cart[index].quantity > 1) {
+                cart[index].quantity -= 1;
+            } else {
+                removeFromCart(index);
+            }
+            updateCart();
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCart();
+        }
+
+        function clearCart() {
+            cart = [];
+            updateCart();
+        }
+
+        function toggleCart() {
+            const cartSidebar = document.getElementById('cartSidebar');
+            cartSidebar.classList.toggle('open');
+        }
+
+        function checkout() {
+            if (cart.length === 0) {
+                showNotification('🛒 Your cart is empty!');
+                return;
+            }
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            showNotification(`✅ Order placed! Total: $${total.toFixed(2)} - Thank you for shopping at DiazCell!`);
+            clearCart();
+            toggleCart();
+        }
+
+        function startShopping() {
+            document.getElementById('introPage').classList.add('hidden');
+            document.getElementById('pageContent').classList.remove('hidden');
+            displayPhones();
+            updateCart();
+        }
+
+        function goBackToIntro() {
+            // Hide the catalogue and show the intro page
+            document.getElementById('pageContent').classList.add('hidden');
+            document.getElementById('introPage').classList.remove('hidden');
+        }
+
+        function filterByCategory(category, button) {
+            currentCategory = category;
+            
+            // Update active button
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            button.classList.add('active');
+            
+            displayPhones();
+        }
+
+        function showProductDetails(productName) {
+            const product = items.find(item => item.name === productName);
+            if (!product) return;
+
+            document.getElementById('detailsImage').src = product.image;
+            document.getElementById('detailsImage').alt = product.name;
+            document.getElementById('detailsName').textContent = product.name;
+            document.getElementById('detailsPrice').textContent = product.price.toFixed(2);
+            document.getElementById('detailsStock').textContent = getStockStatus(product.stock).text;
+            document.getElementById('detailsDescription').textContent = product.description;
+
+            const detailsSpecsList = document.getElementById('detailsSpecsList');
+            detailsSpecsList.innerHTML = product.specs.map(spec => `
+                <li><strong>${spec.label}:</strong> ${spec.value}</li>
+            `).join('');
+
+            const addBtn = document.getElementById('detailsAddToCartBtn');
+            addBtn.disabled = product.stock === 0;
+            addBtn.textContent = product.stock === 0 ? 'Out of Stock' : 'Add to Cart';
+            addBtn.setAttribute('data-product-name', product.name);
+
+            document.getElementById('detailsOverlay').classList.remove('hidden');
+        }
+
+        function closeProductDetails() {
+            document.getElementById('detailsOverlay').classList.add('hidden');
+        }
+
+        function detailsAddToCart() {
+            const productName = document.getElementById('detailsAddToCartBtn').getAttribute('data-product-name');
+            addToCart(productName);
+        }
+
+        function displayPhones() {
+            const catalogueDiv = document.getElementById('catalogue');
+            catalogueDiv.innerHTML = '';
+            
+            const filtered = items.filter(phone => phone.category === currentCategory);
+            
+            filtered.forEach(phone => {
+                const stockStatus = getStockStatus(phone.stock);
+                const phoneCard = document.createElement('div');
+                phoneCard.className = 'phone-card';
+                const isOutOfStock = phone.stock === 0;
+                
+                phoneCard.innerHTML = `
+                    <img src="${phone.image}" alt="${phone.name}" class="phone-image">
+                    <div class="phone-name">${phone.name}</div>
+                    <div class="phone-price">$${phone.price.toFixed(2)}</div>
+                    <div class="phone-stock ${stockStatus.class}">${stockStatus.text}</div>
+                    <div class="card-actions">
+                        <button class="view-details-btn" onclick="showProductDetails('${phone.name}')">View Specs</button>
+                        <button class="add-to-cart-btn ${isOutOfStock ? 'disabled' : ''}" 
+                                onclick="${isOutOfStock ? '' : `addToCart('${phone.name}')`}"
+                                ${isOutOfStock ? 'disabled' : ''}>
+                            ${isOutOfStock ? 'Item not available' : 'Add to Cart'}
+                        </button>
+                    </div>
+                `;
+                
+                catalogueDiv.appendChild(phoneCard);
+            });
+        }
+    </script>
+</body>
+</html>
