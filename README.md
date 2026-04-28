@@ -5,10 +5,10 @@ A sleek, modern, and highly interactive e-commerce frontend for a premium mobile
 ## ✨ Features
 
 * **Smooth Page Transitions:** Seamless scaling and fading animations when navigating between the intro and the main catalogue.
-* **Dynamic Product Grid:** * Filter products by category (📱 Phones, 🔌 Chargers & Cables, 🎧 Audios).
+* **Dynamic Product Grid:** Filter products by category (📱 Phones, 🔌 Chargers & Cables, 🎧 Audios).
   * (coming soon) Auto-updating stock indicators (In Stock, Low Stock, Out of Stock).
   * Spring-physics hover effects on product cards.
-* **Interactive Cart Sidebar:** * Buttery-smooth slide-in animation.
+* **Interactive Cart Sidebar:** Buttery-smooth slide-in animation.
   * Dynamically calculates totals based on item quantity.
   * Add, subtract, or remove items in real-time.
 * **Product Details Overlay:** A modal that displays high-res images and detailed technical specifications for each item.
