@@ -1,5 +1,3 @@
-/* Clean, Minimalist, Animated Phone Catalogue CSS */
-
 :root {
     --bg-color: #f5f5f7;
     --surface: #ffffff;
@@ -43,6 +41,7 @@ body {
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
 }
+
 /* --- KEYFRAMES --- */
 @keyframes fadeUp {
     0% { opacity: 0; transform: translateY(30px); }
@@ -95,27 +94,25 @@ h1 {
     background: transparent;
     color: var(--text-muted);
     border: none;
-    padding: 16px 20px; /* Increased clickable area */
-    font-size: 1.15rem; /* Bigger font size */
-    font-weight: 600; /* Bolder text */
+    padding: 16px 20px; 
+    font-size: 1.15rem;
+    font-weight: 600; 
     cursor: pointer;
     transition: color 0.2s ease, transform 0.2s ease;
-    margin-bottom: -10px; /* Adjusted spacing for the bigger size */
+    margin-bottom: -10px;
 }
-
 .back-btn svg {
     width: 24px;
     height: 24px;
 }
-
 .back-btn:hover {
     color: var(--text-main);
-    transform: translateX(-6px); /* Slightly bigger slide animation to match the size */
+    transform: translateX(-6px); 
 }
 .back-btn:hover {
     color: var(--text-main);
-    transform: translateX(-4px); /* Cute little slide-left animation on hover */
-}
+    transform: translateX(-4px); 
+    
 .intro-card {
     background: transparent;
     padding: 40px;
@@ -123,13 +120,11 @@ h1 {
     text-align: center;
     animation: fadeUp 1s var(--ease-out-expo) both;
 }
-
 .intro-card h1 {
     font-size: 3rem;
     margin-bottom: 16px;
-    animation: none; /* Inherit parent animation */
+    animation: none; 
 }
-
 .intro-card p {
     font-size: 1.15rem;
     color: var(--text-muted);
@@ -147,13 +142,11 @@ h1 {
     cursor: pointer;
     transition: transform 0.3s var(--ease-spring), background-color 0.3s ease, box-shadow 0.3s ease;
 }
-
 .start-shopping-btn:hover {
     background-color: var(--accent-hover);
     transform: scale(1.05);
     box-shadow: 0 8px 20px rgba(0,0,0,0.15);
 }
-
 .start-shopping-btn:active {
     transform: scale(0.98);
 }
@@ -173,9 +166,9 @@ h1 {
     color: var(--text-muted);
     border: 1px solid var(--border);
     border-radius: 99px;
-    padding: 16px 32px; /* Increased padding to make them taller and wider */
-    font-size: 1.15rem; /* Bigger font size so the text and emojis pop */
-    font-weight: 600; /* Made the text slightly bolder */
+    padding: 16px 32px; 
+    font-size: 1.15rem; 
+    font-weight: 600; 
     cursor: pointer;
     transition: all 0.3s var(--ease-standard);
 }
@@ -465,16 +458,14 @@ h1 {
 }
 
 /* Cart Sidebar */
-/* --- THE INDESTRUCTIBLE CART SIDEBAR --- */
-
 .cart-sidebar {
     position: fixed;
     right: -450px;
     top: 0;
-    bottom: 0; /* THIS REPLACES HEIGHT: Locks it perfectly to the screen */
+    bottom: 0;
     width: 400px;
     max-width: 100%;
-    overflow: hidden; /* Stops anything from pushing out */
+    overflow: hidden;
     background-color: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
@@ -498,7 +489,7 @@ h1 {
     padding: 24px 32px;
     border-bottom: 1px solid var(--border);
     background: var(--surface);
-    flex-shrink: 0; /* Cannot be squished */
+    flex-shrink: 0; 
 }
 
 .cart-header h2 { margin: 0; font-size: 1.5rem; }
@@ -507,10 +498,10 @@ h1 {
 
 /* 2. The Scrolling Items Area */
 .cart-items {
-    flex: 1; /* Takes remaining space */
-    overflow-y: auto; /* Scrolls if content is too long */
+    flex: 1; 
+    overflow-y: auto; 
     padding: 24px 32px;
-    min-height: 0; /* Magic rule that allows scrolling to work */
+    min-height: 0; 
 }
 
 .empty-cart { text-align: center; color: var(--text-muted); margin-top: 40px; }
@@ -521,7 +512,7 @@ h1 {
     grid-template-columns: 1fr auto;
     align-items: center;
     row-gap: 16px;
-    padding: 16px 8px 24px 8px; /* Added proper breathing room back! */
+    padding: 16px 8px 24px 8px; 
     margin-bottom: 24px;
     border-bottom: 1px solid var(--border);
     animation: fadeUp 0.4s var(--ease-out-expo) forwards;
@@ -564,8 +555,8 @@ h1 {
     padding: 24px 32px;
     background: var(--surface);
     border-top: 1px solid var(--border);
-    flex-shrink: 0; /* Cannot be squished */
-    margin-top: auto; /* Forces it to the absolute bottom */
+    flex-shrink: 0; 
+    margin-top: auto; 
 }
 
 .cart-total { display: block; text-align: right; font-size: 1.25rem; font-weight: 600; margin-bottom: 24px; }
