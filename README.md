@@ -20,7 +20,7 @@ A sleek, modern, and highly interactive e-commerce frontend for a premium mobile
 This project was built entirely from scratch without the use of heavy external libraries or frameworks:
 
 * **HTML5:** Semantic structure and accessible layout.
-* **CSS3:** * Advanced CSS Grid and Flexbox layouts.
+* **CSS3:** Advanced CSS Grid and Flexbox layouts.
   * Custom variables (`:root`) for easy theme management.
   * keyframe animations and `cubic-bezier` timing functions for physics-based movement.
   * `backdrop-filter` for premium blur effects.
