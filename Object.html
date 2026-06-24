@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phone Catalogue</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="Style.css?v=8">
+</head>
+<body>
+    <div class="notification" id="notification">
+        <span id="notificationText">Added to cart</span>
+    </div>
+
+    <div class="intro-page" id="introPage">
+        <div class="intro-card">
+            <h1>Welcome to DiazCell</h1>
+            <p>Discover premium phones, chargers, and audio accessories handpicked for your next upgrade. Tap below to explore our catalogue.</p>
+            <button class="start-shopping-btn" onclick="startShopping()">Start Shopping</button>
+        </div>
+    </div>
+
+    <div id="pageContent" class="hidden">
+        <button class="back-btn" onclick="goBackToIntro()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            Back
+        </button>
+
+        <div class="user-nav">
+            <span id="userDisplay" class="user-display">Guest Mode</span>
+            <button id="adminToggleBtn" class="admin-btn hidden" onclick="openAdminPanel()">Admin Panel</button>
+            <button id="loginToggleBtn" class="login-toggle-btn" onclick="handleAuthClick()">Login</button>
+        </div>
+
+        <h1>Browse Products</h1>
+        
+        <div class="category-buttons">
+            <button class="category-btn active" onclick="filterByCategory('phone', this)">Phone</button>
+            <button class="category-btn" onclick="filterByCategory('charger', this)">Charger & Cable</button>
+            <button class="category-btn" onclick="filterByCategory('audio', this)">Audios</button>
+        </div>
+        
+        <div class="main-content">
+            <div id="catalogue" class="catalogue"></div>
+        </div>
+        
+        <div class="cart-sidebar" id="cartSidebar">
+            <div class="cart-header">
+                <h2>Cart</h2>
+                <button class="close-cart-btn" onclick="toggleCart()">✕</button>
+            </div>
+            <div class="cart-items" id="cartItems"></div>
+            <div class="cart-footer">
+                <div class="cart-summary">
+                    <div class="summary-row">
+                        <span>Subtotal:</span>
+                        <span>$<span id="cartSubtotal">0.00</span></span>
+                    </div>
+                    <div class="summary-row">
+                        <span>PPN (11%):</span>
+                        <span>$<span id="cartTax">0.00</span></span>
+                    </div>
+                    <div class="summary-row grand-total">
+                        <span>Total:</span>
+                        <span>$<span id="cartTotal">0.00</span></span>
+                    </div>
+                </div>
+                <button class="checkout-btn" onclick="checkout()">Checkout</button>
+                <button class="clear-cart-btn" onclick="clearCart()">Clear Cart</button>
+            </div>
+        </div>
+        
+        <button class="cart-toggle-btn" onclick="toggleCart()">Cart (<span id="cartCount">0</span>)</button>
+
+        <div class="details-overlay hidden" id="detailsOverlay">
+            <div class="details-panel">
+                <button class="close-details-btn" onclick="closeProductDetails()">✕</button>
+                <div class="details-header">
+                    <img id="detailsImage" class="details-image" src="" alt="Product image">
+                    <div class="details-summary">
+                        <h2 id="detailsName"></h2>
+                        <p class="details-price">$<span id="detailsPrice"></span></p>
+                        <p id="detailsStock" class="details-stock"></p>
+                    </div>
+                </div>
+                <p id="detailsDescription" class="details-description"></p>
+                <div class="details-specs">
+                    <h3>Product Specifications</h3>
+                    <ul id="detailsSpecsList"></ul>
+                </div>
+                <button class="add-to-cart-btn" id="detailsAddToCartBtn" onclick="detailsAddToCart()">Add to Cart</button>
+            </div>
+        </div>
+
+        <div class="auth-overlay hidden" id="authOverlay">
+            <div class="auth-panel">
+                <button class="close-details-btn" onclick="closeAuth()">✕</button>
+                <h2 id="authTitle">Login to DiazCell</h2>
+                <div id="authMessage"></div>
+                <input type="text" id="authUsername" placeholder="Username" class="auth-input">
+                <input type="password" id="authPassword" placeholder="Password (Min. 8 characters)" class="auth-input">
+                <button class="auth-submit-btn" onclick="submitAuth()">Submit</button>
+                <p class="auth-switch">
+                    <span id="authSwitchText">Don't have an account?</span>
+                    <a onclick="toggleAuthMode()">Register here</a>
+                </p>
+            </div>
+        </div>
+
+        <div class="auth-overlay hidden" id="adminOverlay">
+            <div class="auth-panel admin-panel-container">
+                <button class="close-details-btn" onclick="closeAdminPanel()">✕</button>
+                
+                <h2>Inventory Management</h2>
+                <div style="overflow-x: auto; max-height: 40vh; overflow-y: auto; margin-bottom: 40px;">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Price ($)</th>
+                                <th>Stock</th>
+                                <th>Description</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminTableBody"></tbody>
+                    </table>
+                </div>
+
+                <h2>Order History</h2>
+                <div style="overflow-x: auto; max-height: 40vh; overflow-y: auto;">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Customer</th>
+                                <th>WhatsApp</th>
+                                <th>Items Ordered</th>
+                                <th>Total Paid</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminOrdersBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="disclaimer-modal hidden" id="disclaimerModal">
+            <div class="disclaimer-content">
+                <h2>Order Details</h2>
+                <p style="margin-bottom: 15px;">Please provide your contact information to proceed with the order.</p>
+                
+                <input type="text" id="checkoutName" placeholder="Full Name" class="auth-input" style="width: 100%; margin-bottom: 10px; box-sizing: border-box;">
+                <input type="tel" id="checkoutPhone" placeholder="WhatsApp Number" class="auth-input" style="width: 100%; margin-bottom: 15px; box-sizing: border-box;">
+                
+                <ul style="text-align: left; margin-bottom: 15px;">
+                    <li>All sales are final</li>
+                    <li>Devices are subject to availability</li>
+                </ul>
+                
+                <div class="disclaimer-buttons">
+                    <button class="disclaimer-cancel-btn" onclick="cancelCheckout()">Cancel</button>
+                    <button class="disclaimer-confirm-btn" onclick="confirmCheckout()">Proceed with Order</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js?v=3"></script>
+</body>
+</html>
